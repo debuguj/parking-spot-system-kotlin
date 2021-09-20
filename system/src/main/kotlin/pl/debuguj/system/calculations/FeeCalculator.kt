@@ -23,20 +23,24 @@ class FeeCalculator(private val currencyRateHandler: CurrencyRateHandler) {
         val period: BigDecimal = getPeriod(archivedSpot)
         var startSum: BigDecimal? = archivedSpot?.driverType?.beginValue
 
-        var compResult: Int = period.compareTo(BigDecimal.ONE);
+        val compResult = period.compareTo(BigDecimal.ONE)
 
-        if (compResult == 0) {
-            return startSum;
-        } else if (compResult > 0) {
-            var current = BigDecimal("2.0");
-
-            for (i in 1 until period.intValueExact()) {
-                startSum = startSum?.add(current);
-                current = current.multiply(archivedSpot?.driverType?.factor);
+        when {
+            compResult == 0 -> {
+                return startSum
             }
-            return startSum;
-        } else {
-            return BigDecimal.ZERO;
+            compResult > 0 -> {
+                var current = BigDecimal("2.0")
+
+                for (i in 1 until period.intValueExact()) {
+                    startSum = startSum?.add(current)
+                    current = current.multiply(archivedSpot?.driverType?.factor)
+                }
+                return startSum
+            }
+            else -> {
+                return BigDecimal.ZERO
+            }
         }
     }
 
@@ -50,8 +54,8 @@ class FeeCalculator(private val currencyRateHandler: CurrencyRateHandler) {
         val minutes =
             archivedSpot?.beginTimestamp?.until(archivedSpot.endTimestamp, ChronoUnit.MINUTES)?.let { BigDecimal(it) }
                 ?: BigDecimal.ZERO
-        val div = BigDecimal(60);
+        val div = BigDecimal(60)
 
-        return minutes.divide(div, RoundingMode.CEILING);
+        return minutes.divide(div, RoundingMode.CEILING)
     }
 }
