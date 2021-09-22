@@ -50,12 +50,10 @@ class FeeCalculator(private val currencyRateHandler: CurrencyRateHandler) {
      * @return Period of parking time in hours
      */
     private fun getPeriod(archivedSpot: ArchivedSpot?): BigDecimal {
-
         val minutes =
             archivedSpot?.beginTimestamp?.until(archivedSpot.endTimestamp, ChronoUnit.MINUTES)?.let { BigDecimal(it) }
                 ?: BigDecimal.ZERO
-        val div = BigDecimal(60)
 
-        return minutes.divide(div, RoundingMode.CEILING)
+        return minutes.divide(BigDecimal(60), RoundingMode.CEILING)
     }
 }
